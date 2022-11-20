@@ -15,7 +15,8 @@ public class HashTable <K, V>{
         buckets = new ArrayList<List<Entry>>();
     }
     private int getBucketIndexForKey(K key) {
-        return key.toString().chars().sum() % bucketsSize; // toString then .chars converts to stream, then sums.
+        if (key == null) return 0;
+        else return key.toString().chars().sum() % bucketsSize; // toString then .chars converts to stream, then sums.
     }
 
     private List<Entry> getBucketAtIndex(int position) {
@@ -27,15 +28,23 @@ public class HashTable <K, V>{
     }
 
     public V get(K key) {
+        if (buckets == null) initBuckets();
         V out = null;
-        int bucketIndex = getBucketIndexForKey(key);
-        List<Entry> bucket = buckets.get(bucketIndex);
-        if (bucket != null ) {
-            try {
-                Entry<K, V> entry = (Entry<K, V>) bucket.stream().filter(checkEntry -> checkEntry.getKey().equals(key)).toArray()[0];
-                out = entry.getValue();
-            }
-            catch (NullPointerException e) {
+        if (buckets.size() != 0) {
+            int bucketIndex = getBucketIndexForKey(key);
+            List<Entry> bucket = buckets.get(bucketIndex);
+            if (bucket != null) {
+                try {
+                    Entry<K, V> entry;
+                    if (key == null) {
+                        entry = (Entry<K, V>) bucket.stream().filter(checkEntry -> checkEntry.getKey() == (key)).toArray()[0];
+                    }
+                    else {
+                        entry = (Entry<K, V>) bucket.stream().filter(checkEntry -> checkEntry.getKey().equals(key)).toArray()[0];
+                    }
+                    out = entry.getValue();
+                } catch (NullPointerException e) {
+                }
             }
         }
         return out;
@@ -50,14 +59,16 @@ public class HashTable <K, V>{
                 bucket = new ArrayList<>();
                 Entry<K,V> entry = new Entry<K, V>(key, value);
                 bucket.add(entry);
-                buckets.add(bucketIndex, bucket);
+                buckets.set(bucketIndex, bucket);
             }
             else {
                 boolean foundKey = false;
 
                 for (Entry entry: bucket) {
-                    if (entry.getKey().equals(key)) entry.setValue(value);
-                    foundKey = true;
+                    if (entry.getKey().equals(key)) {
+                        entry.setValue(value);
+                        foundKey = true;
+                    }
                 }
 
                 if (!foundKey)  {
@@ -74,7 +85,7 @@ public class HashTable <K, V>{
             Entry<K, V> newEntry = new Entry<>(key, value);
             List<Entry> newBucket = new ArrayList<Entry>();
             newBucket.add(newEntry);
-            buckets.add(bucketIndex, newBucket);
+            buckets.set(bucketIndex, newBucket);
         }
     }
 
@@ -88,6 +99,7 @@ public class HashTable <K, V>{
             out = (V)bucket.get(entryIndex).getValue();
             bucket.remove(entryIndex);
         }
+        if (bucket.size() == 0) buckets.set(bucketIndex, null);
         return out;
     }
 
