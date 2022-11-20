@@ -15,7 +15,7 @@ public class HashTable <K, V>{
         buckets = new ArrayList<List<Entry>>();
     }
     private int getBucketIndexForKey(K key) {
-        return key.toString().chars().sum() % bucketsSize; // toString then .chars converts to stream, than sums.
+        return key.toString().chars().sum() % bucketsSize; // toString then .chars converts to stream, then sums.
     }
 
     private List<Entry> getBucketAtIndex(int position) {
@@ -32,7 +32,39 @@ public class HashTable <K, V>{
 
     public void put(K key, V value) {
         if (buckets == null) initBuckets();
-        throw new RuntimeException("FIXME");
+        int bucketIndex = getBucketIndexForKey(key);
+        try {
+            List<Entry> bucket = getBucketAtIndex(bucketIndex);
+            if (bucket == null) {
+                bucket = new ArrayList<>();
+                Entry<K,V> entry = new Entry<K, V>(key, value);
+                bucket.add(entry);
+                buckets.add(bucketIndex, bucket);
+            }
+            else {
+                boolean foundKey = false;
+
+                for (Entry entry: bucket) {
+                    if (entry.getKey().equals(key)) entry.setValue(value);
+                    foundKey = true;
+                }
+
+                if (!foundKey)  {
+                    Entry<K,V> newEntry = new Entry<K, V>(key, value);
+                    bucket.add(newEntry);
+                }
+            }
+        }
+        catch (IndexOutOfBoundsException e) {
+            int toAdd = bucketIndex - (buckets.size() - 1);
+            for (int i = 0; i < toAdd; i++) {
+                buckets.add(null);
+            }
+            Entry<K, V> newEntry = new Entry<>(key, value);
+            List<Entry> newBucket = new ArrayList<Entry>();
+            newBucket.add(newEntry);
+            buckets.add(bucketIndex, newBucket);
+        }
     }
 
     public V remove(K key) {
@@ -54,4 +86,15 @@ class Entry <K, V> {
         this.value = value;
     }
 
+    public K getKey() {
+        return key;
+    }
+
+    public V getValue() {
+        return value;
+    }
+
+    public void setValue(V value) {
+        this.value = value;
+    }
 }
