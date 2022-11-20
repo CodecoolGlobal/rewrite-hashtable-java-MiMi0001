@@ -2,14 +2,14 @@ package com.codecool.hashtable;
 
 import java.util.List;
 
-public class HashTable {
+public class HashTable <K, V>{
 
     // Number of all buckets - Do not modify!
     private final int bucketsSize = 16;
 
     private List<List<Entry>> buckets;
 
-    private int getBucketIndexForKey(String key) {
+    private int getBucketIndexForKey(K key) {
         throw new RuntimeException("FIXME");
     }
 
@@ -17,19 +17,19 @@ public class HashTable {
         throw new RuntimeException("FIXME");
     }
 
-    private Entry findEntryInBucket(String key, List<Entry> bucket) {
+    private Entry findEntryInBucket(K key, List<Entry> bucket) {
         throw new RuntimeException("FIXME");
     }
 
-    public Integer get(String key) {
+    public V get(K key) {
         throw new RuntimeException("FIXME");
     }
 
-    public void put(String key, Integer value) {
+    public void put(K key, V value) {
         throw new RuntimeException("FIXME");
     }
 
-    public Integer remove(String key) {
+    public V remove(K key) {
         throw new RuntimeException("FIXME");
     }
 
@@ -38,12 +38,12 @@ public class HashTable {
     }
 }
 
-class Entry {
+class Entry <K, V> {
 
-    public String key;
-    public Integer value;
+    public K key;
+    public V value;
 
-    public Entry(String key, Integer value) {
+    public Entry(K key, V value) {
         this.key = key;
         this.value = value;
     }
