@@ -23,7 +23,7 @@ public class HashTable <K, V>{
     }
 
     private Entry findEntryInBucket(K key, List<Entry> bucket) {
-        throw new RuntimeException("FIXME");
+        return (Entry<K, V>) bucket.stream().filter(checkEntry -> checkEntry.getKey().equals(key)).toArray()[0];
     }
 
     public V get(K key) {
@@ -79,11 +79,20 @@ public class HashTable <K, V>{
     }
 
     public V remove(K key) {
-        throw new RuntimeException("FIXME");
+        V out = null;
+        int bucketIndex = getBucketIndexForKey(key);
+        List<Entry> bucket = buckets.get(bucketIndex);
+        Entry entry = findEntryInBucket(key, bucket);
+        int entryIndex = bucket.indexOf(entry);
+        if (entryIndex != -1) {
+            out = (V)bucket.get(entryIndex).getValue();
+            bucket.remove(entryIndex);
+        }
+        return out;
     }
 
     public void clear() {
-        throw new RuntimeException("FIXME");
+        initBuckets();
     }
 }
 
