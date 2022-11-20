@@ -27,7 +27,18 @@ public class HashTable <K, V>{
     }
 
     public V get(K key) {
-        throw new RuntimeException("FIXME");
+        V out = null;
+        int bucketIndex = getBucketIndexForKey(key);
+        List<Entry> bucket = buckets.get(bucketIndex);
+        if (bucket != null ) {
+            try {
+                Entry<K, V> entry = (Entry<K, V>) bucket.stream().filter(checkEntry -> checkEntry.getKey().equals(key)).toArray()[0];
+                out = entry.getValue();
+            }
+            catch (NullPointerException e) {
+            }
+        }
+        return out;
     }
 
     public void put(K key, V value) {
