@@ -6,7 +6,7 @@ import java.util.stream.IntStream;
 
 public class HashTable <K, V>{
 
-    // Number of all buckets - Do not modify!
+    // Number of all buckets
     private final int bucketsSize = 16;
 
     private List<List<Entry>> buckets;
@@ -14,6 +14,7 @@ public class HashTable <K, V>{
     private void initBuckets() {
         buckets = new ArrayList<List<Entry>>();
     }
+
     private int getBucketIndexForKey(K key) {
         if (key == null) return 0;
         else return key.toString().chars().sum() % bucketsSize; // toString then .chars converts to stream, then sums.
@@ -24,7 +25,9 @@ public class HashTable <K, V>{
     }
 
     private Entry findEntryInBucket(K key, List<Entry> bucket) {
-        return (Entry<K, V>) bucket.stream().filter(checkEntry -> checkEntry.getKey().equals(key)).toArray()[0];
+        return (Entry<K, V>) bucket.stream()
+                .filter(checkEntry -> checkEntry.getKey()
+                        .equals(key)).toArray()[0];
     }
 
     public V get(K key) {
